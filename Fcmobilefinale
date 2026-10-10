@@ -1,0 +1,249 @@
+-- CLIMAX GUI - MOBILE-SCALED EDITION
+-- Mobile + PC | StarterPlayerScripts > LocalScript
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Remove duplicate GUI
+local oldGui = playerGui:FindFirstChild("ClimaxBarGUI")
+if oldGui then
+    oldGui:Destroy()
+end
+
+-- ScreenGui
+local gui = Instance.new("ScreenGui")
+gui.Name = "ClimaxBarGUI"
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+gui.Parent = playerGui
+
+------------------------------------------------------------------
+-- MAIN CLIMAX BAR (Scaled down for Mobile)
+------------------------------------------------------------------
+local outer = Instance.new("Frame")
+outer.Name = "ClimaxBar"
+outer.AnchorPoint = Vector2.new(0, 0.5)
+outer.Position = UDim2.new(0, 10, 0.5, 0)
+outer.Size = UDim2.new(0, 52, 0, 310) -- Compact height & width for mobile screens
+outer.BackgroundColor3 = Color3.fromRGB(142, 112, 190)
+outer.BorderSizePixel = 0
+outer.Parent = gui
+
+local outerCorner = Instance.new("UICorner")
+outerCorner.CornerRadius = UDim.new(0, 8)
+outerCorner.Parent = outer
+
+local outline = Instance.new("UIStroke")
+outline.Color = Color3.fromRGB(27, 17, 39)
+outline.Thickness = 2
+outline.Parent = outer
+
+local outerGradient = Instance.new("UIGradient")
+outerGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(115, 77, 172)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(190, 174, 215))
+})
+outerGradient.Rotation = 90
+outerGradient.Parent = outer
+
+-- CLIMAX title
+local title = Instance.new("TextLabel")
+title.Name = "Title"
+title.AnchorPoint = Vector2.new(0.5, 0)
+title.Position = UDim2.new(0.5, 0, 0, 8)
+title.Size = UDim2.new(1, -2, 0, 24)
+title.BackgroundTransparency = 1
+title.Text = "CLIMAX"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+title.Parent = outer
+
+local textConstraint = Instance.new("UITextSizeConstraint")
+textConstraint.MinTextSize = 8
+textConstraint.MaxTextSize = 14
+textConstraint.Parent = title
+
+local titleStroke = Instance.new("UIStroke")
+titleStroke.Color = Color3.fromRGB(65, 35, 95)
+titleStroke.Thickness = 1
+titleStroke.Parent = title
+
+-- Inner purple bar
+local inner = Instance.new("Frame")
+inner.Name = "InnerBar"
+inner.AnchorPoint = Vector2.new(0.5, 0)
+inner.Position = UDim2.new(0.5, 0, 0, 36)
+inner.Size = UDim2.new(0, 32, 1, -48)
+inner.BackgroundColor3 = Color3.fromRGB(73, 0, 130)
+inner.BorderSizePixel = 0
+inner.Parent = outer
+
+local innerCorner = Instance.new("UICorner")
+innerCorner.CornerRadius = UDim.new(0, 6)
+innerCorner.Parent = inner
+
+local innerGradient = Instance.new("UIGradient")
+innerGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(45, 0, 95)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(28, 0, 65))
+})
+innerGradient.Rotation = 90
+innerGradient.Parent = inner
+
+-- Main Bar Animation
+local mainOriginalPos = outer.Position
+local mainBob = TweenService:Create(
+    outer,
+    TweenInfo.new(2.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+    {
+        Position = mainOriginalPos + UDim2.new(0, 0, 0, -4),
+        Rotation = 3
+    }
+)
+mainBob:Play()
+
+------------------------------------------------------------------
+-- EMOTE BUTTON (Compact Mobile Size)
+------------------------------------------------------------------
+local emoteButton = Instance.new("TextButton")
+emoteButton.Name = "EmoteButton"
+emoteButton.AnchorPoint = Vector2.new(0, 0)
+emoteButton.Position = UDim2.new(0, 70, 0.5, -155)
+emoteButton.Size = UDim2.new(0, 36, 0, 36)
+emoteButton.BackgroundColor3 = Color3.fromRGB(142, 112, 190)
+emoteButton.BorderSizePixel = 0
+emoteButton.Text = "🕺"
+emoteButton.TextSize = 16
+emoteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+emoteButton.Font = Enum.Font.GothamBold
+emoteButton.Parent = gui
+
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(0, 8)
+btnCorner.Parent = emoteButton
+
+local btnStroke = Instance.new("UIStroke")
+btnStroke.Color = Color3.fromRGB(27, 17, 39)
+btnStroke.Thickness = 2
+btnStroke.Parent = emoteButton
+
+local btnGradient = Instance.new("UIGradient")
+btnGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(115, 77, 172)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(190, 174, 215))
+})
+btnGradient.Rotation = 90
+btnGradient.Parent = emoteButton
+
+-- Emote Button Animation
+local btnOriginalPos = emoteButton.Position
+local buttonFloat = TweenService:Create(
+    emoteButton,
+    TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+    {
+        Position = btnOriginalPos + UDim2.new(0, 3, 0, 5),
+        Rotation = -6
+    }
+)
+buttonFloat:Play()
+
+-- Emote Function
+local isClicking = false
+emoteButton.MouseButton1Click:Connect(function()
+    if isClicking then return end
+    isClicking = true
+    
+    local clickPop = TweenService:Create(
+        emoteButton,
+        TweenInfo.new(0.12, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+        { Size = UDim2.new(0, 42, 0, 42) }
+    )
+    local clickReset = TweenService:Create(
+        emoteButton,
+        TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+        { Size = UDim2.new(0, 36, 0, 36) }
+    )
+    
+    clickPop:Play()
+    clickPop.Completed:Connect(function()
+        clickReset:Play()
+        isClicking = false
+    end)
+
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        local animator = humanoid:FindFirstChildOfClass("Animator") or humanoid:WaitForChild("Animator")
+        local animation = Instance.new("Animation")
+        animation.AnimationId = "rbxassetid://507770239"
+        
+        local track = animator:LoadAnimation(animation)
+        track.Priority = Enum.AnimationPriority.Action
+        track:Play()
+    end
+end)
+
+------------------------------------------------------------------
+-- ANIMATED HITBOX TOGGLE BUTTON (Mobile Scale)
+------------------------------------------------------------------
+local hitboxButton = Instance.new("TextButton")
+hitboxButton.Name = "HitboxButton"
+hitboxButton.AnchorPoint = Vector2.new(1, 0.5)
+hitboxButton.Position = UDim2.new(1, -15, 0.5, 0)
+hitboxButton.Size = UDim2.new(0, 110, 0, 40)
+hitboxButton.BackgroundColor3 = Color3.fromRGB(180, 140, 220)
+hitboxButton.BorderSizePixel = 0
+hitboxButton.Text = "Hitboxes: Off"
+hitboxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+hitboxButton.TextScaled = true
+hitboxButton.Font = Enum.Font.GothamBold
+hitboxButton.Parent = gui
+
+local hbCorner = Instance.new("UICorner")
+hbCorner.CornerRadius = UDim.new(0, 8)
+hbCorner.Parent = hitboxButton
+
+local hbStroke = Instance.new("UIStroke")
+hbStroke.Color = Color3.fromRGB(45, 20, 65)
+hbStroke.Thickness = 2
+hbStroke.Parent = hitboxButton
+
+local hbConstraint = Instance.new("UITextSizeConstraint")
+hbConstraint.MinTextSize = 10
+hbConstraint.MaxTextSize = 15
+hbConstraint.Parent = hitboxButton
+
+local hbGradient = Instance.new("UIGradient")
+hbGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(160, 120, 200)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(210, 180, 240))
+})
+hbGradient.Rotation = 90
+hbGradient.Parent = hitboxButton
+
+-- Floating Bobbing Animation for Hitbox Button
+local hbOriginalPos = hitboxButton.Position
+local hbFloat = TweenService:Create(
+    hitboxButton,
+    TweenInfo.new(2.2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+    {
+        Position = hbOriginalPos + UDim2.new(0, 0, 0, -5),
+        Rotation = -2
+    }
+)
+hbFloat:Play()
+
+-- Pure Text Toggle Logic
+local isOn = false
+hitboxButton.MouseButton1Click:Connect(function()
+    isOn = not isOn
+    if isOn then
+        hitboxButton.Text = "Hitboxes: On"
+    else
+        hitboxButton.Text = "Hitboxes: Off"
+    end
+end)
